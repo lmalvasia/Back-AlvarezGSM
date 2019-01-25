@@ -3,7 +3,7 @@ var bodyParser = require("body-parser");
 var morgan = require("morgan");
 var api = require("./routes/api");
 var app = express();
-var port = 3000;
+var port = process.env.PORT || 5000;
 
 app.use(morgan("dev"));
 app.use(bodyParser.urlencoded({ extended: false }));
