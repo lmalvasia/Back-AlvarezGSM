@@ -65,14 +65,6 @@ router.get("/:id", function(req, res, next) {
     });
 });
 
-router.get("/search/:name", function(req, res, next) {
-  var name = req.params.name;
-  var customers = _.filter(data.list, function(item) {
-    return item.name.indexOf(name) >= 0;
-  });
-  res.status(200).json(customers);
-});
-
 router.patch("/:id", function(req, res, next) {
   var id = req.params.id;
   var updateOps = {};
