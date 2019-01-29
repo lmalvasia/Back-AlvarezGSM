@@ -99,7 +99,7 @@ router.delete("/:id", function(req, res, next) {
         message: "Customer deleted!",
         request: {
           type: "POST",
-          url: "http://localhost:3000/customers",
+          url: "http://localhost:3000/api/customers",
           body: {
             name: "String",
             street: "String",
@@ -130,7 +130,8 @@ router.post("/", function(req, res, next) {
         message: "Created customer successfully",
         createdCustomer: {
           name: result.name,
-          price: result.price,
+          street: result.street,
+          cellphone: result.cellphone,
           _id: result._id,
           request: {
             type: "GET",

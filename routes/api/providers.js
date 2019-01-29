@@ -1,45 +1,151 @@
 var express = require("express");
-var fs = require("fs");
-var path = require("path");
 var _ = require("lodash");
-var data = require("../../data/providers");
+var mongoose = require("mongoose");
 var router = express.Router();
-
-var saveData = function(data) {
-  var filePath = path.join(__dirname, "../../data/providers.json");
-  fs.writeFile(filePath, JSON.stringify(data));
-};
+var Provider = require("../../models/provider");
 
 router.get("/", function(req, res, next) {
-  res.status(200).json(data.list);
+  Provider.find()
+    .select("name street cellphone _id")
+    .exec()
+    .then(function(docs) {
+      var response = {
+        count: docs.length,
+        providers: docs.map(function(doc) {
+          return {
+            name: doc.name,
+            street: doc.street,
+            cellphone: doc.cellphone,
+            request: {
+              type: "GET",
+              url: "http://localhost:3000/api/providers/" + doc._id
+            }
+          };
+        })
+      };
+      if (docs.length >= 0) {
+        res.status(200).json(response);
+      } else {
+        res.status(404).json({
+          message: "No entries found"
+        });
+      }
+    })
+    .catch(function(err) {
+      console.log(err);
+      res.status(500).json({
+        error: err
+      });
+    });
 });
 
 router.get("/:id", function(req, res, next) {
   var id = req.params.id;
-  var provider = _.find(data.list, function(item) {
-    return item.id.toString() === id.toString();
-  });
-  if (provider) res.status(200).json(provider);
-  else res.status(404).send("<h1>Not Found</h1>");
+  Provider.findById(id)
+    .select("name street cellphone _id")
+    .exec()
+    .then(function(doc) {
+      if (doc) {
+        res.status(200).json({
+          provider: doc,
+          request: {
+            type: "GET",
+            url: "http://localhost:3000/api/providers"
+          }
+        });
+      } else {
+        res.status(404).json({
+          message: "No valid entry found for provided ID"
+        });
+      }
+    })
+    .catch(function(err) {
+      console.log(err);
+      res.status(500).json({ error: err });
+    });
 });
 
 router.patch("/:id", function(req, res, next) {
-  res.status(200).json({
-    message: "Update provider"
-  });
+  var id = req.params.id;
+  var updateOps = {};
+  for (var ops of req.body) {
+    updateOps[ops.propName] = ops.value;
+  }
+  Provider.update({ _id: id }, { $set: updateOps })
+    .exec()
+    .then(function(result) {
+      res.status(200).json({
+        message: "Provider updated!",
+        request: {
+          type: "GET",
+          url: "http://localhost:3000/api/providers/" + id
+        }
+      });
+    })
+    .catch(function(err) {
+      console.log(err);
+      res.status(500).json({
+        error: err
+      });
+    });
 });
 
 router.delete("/:id", function(req, res, next) {
-  res.status(200).json({
-    message: "Delete provider"
-  });
+  var id = req.params.id;
+  Provider.remove({ _id: id })
+    .exec()
+    .then(function(result) {
+      res.status(200).json({
+        message: "Provider deleted!",
+        request: {
+          type: "POST",
+          url: "http://localhost:3000/api/providers",
+          body: {
+            name: "String",
+            street: "String",
+            cellphone: "Number"
+          }
+        }
+      });
+    })
+    .catch(function(err) {
+      console.log(err);
+      res.status(500).json({
+        error: err
+      });
+    });
 });
 
 router.post("/", function(req, res, next) {
-  var last = _.maxBy(data.list, "id");
-  var newProvider = Object.assign({ id: last.id + 1 }, req.body);
-  data.list.push(newProvider);
-  saveData(data);
-  res.status(201).json(data.list);
+  const provider = new Provider({
+    _id: new mongoose.Types.ObjectId(),
+    name: req.body.name,
+    street: req.body.street,
+    cellphone: req.body.cellphone
+  });
+  provider
+    .save()
+    .then(function(result) {
+      res.status(201).json({
+        message: "Created provider successfully",
+        createdProvider: {
+          name: result.name,
+          street: result.street,
+          cellphone: result.cellphone,
+          _id: result._id,
+          request: {
+            type: "GET",
+            url: "http://localhost:3000/api/providers/" + result._id
+          }
+        }
+      });
+    })
+    .catch(function(err) {
+      console.log(err);
+      res.status(500).json({
+        error: err
+      });
+    });
 });
+
 module.exports = router;

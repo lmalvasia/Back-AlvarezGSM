@@ -107,7 +107,7 @@ router.delete("/:id", function(req, res, next) {
         message: "Item deleted!",
         request: {
           type: "POST",
-          url: "http://localhost:3000/items",
+          url: "http://localhost:3000/api/items",
           body: {
             description: "String",
             quantity: "Number",
