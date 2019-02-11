@@ -12,10 +12,10 @@ module.exports = {
     res.status(200).json(purchases);
   },
   newPurchase: async (req, res, next) => {
-    const provider = await Provider.findById(req.body.provider);
+    const provider = await Provider.findById(req.value.body.provider);
     const newPurchase = new Purchase({
       _id: mongoose.Types.ObjectId(),
-      purchase_number: req.body.purchase_number,
+      purchase_number: req.value.body.purchase_number,
       provider: provider
     });
     const purchase = await newPurchase.save();
@@ -32,7 +32,7 @@ module.exports = {
   },
   replacePurchase: async (req, res, next) => {
     const purchaseId = req.value.params.id;
-    const newPurchase = req.body;
+    const newPurchase = req.value.body;
     const result = await Purchase.findOneAndReplace(purchaseId, newPurchase);
     res.status(201).json({
       message: "Purchase replaced successfully!"
@@ -40,7 +40,7 @@ module.exports = {
   },
   updatePurchase: async (req, res, next) => {
     const purchaseId = req.value.params.id;
-    const newPurchase = req.body;
+    const newPurchase = req.value.body;
     const result = await Purchase.findOneAndUpdate(purchaseId, newPurchase);
     res.status(201).json({
       message: "Purchase updated successfully!"
@@ -73,13 +73,13 @@ module.exports = {
     res.status(200).json(purchase.purchaseproducts);
   },
   newPurchase_Product: async (req, res, next) => {
-    const item = await Item.findById(req.body.product);
+    const item = await Item.findById(req.value.body.product);
     const purchase = await Purchase.findById(req.value.params.id);
     const purchase_product = new Purchase_Product({
       _id: mongoose.Types.ObjectId(),
       product: item,
-      quantity: req.body.quantity,
-      price: req.body.price,
+      quantity: req.value.body.quantity,
+      price: req.value.body.price,
       purchase: purchase
     });
     setTimeout(() => {

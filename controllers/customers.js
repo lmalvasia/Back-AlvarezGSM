@@ -9,9 +9,11 @@ module.exports = {
   newCustomer: async (req, res, next) => {
     const newCustomer = new Customer({
       _id: mongoose.Types.ObjectId(),
-      name: req.body.name,
-      street: req.body.street,
-      cellphone: req.body.cellphone
+      firstName: req.value.body.firstName,
+      lastName: req.value.body.lastName,
+      email: req.value.body.email,
+      street: req.value.body.street,
+      cellphone: req.value.body.cellphone
     });
     const customer = await newCustomer.save();
     res.status(201).json(customer);
@@ -23,7 +25,7 @@ module.exports = {
   },
   replaceCustomer: async (req, res, next) => {
     const customerId = req.value.params.id;
-    const newCustomer = req.body;
+    const newCustomer = req.value.body;
     const result = await Customer.findOneAndReplace(customerId, newCustomer);
     res.status(201).json({
       message: "Customer replaced successfully!"
@@ -31,7 +33,7 @@ module.exports = {
   },
   updateCustomer: async (req, res, next) => {
     const customerId = req.value.params.id;
-    const newCustomer = req.body;
+    const newCustomer = req.value.body;
     const result = await Customer.findOneAndUpdate(customerId, newCustomer);
     res.status(201).json({
       message: "Customer updated successfully!"

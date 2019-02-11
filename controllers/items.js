@@ -9,9 +9,9 @@ module.exports = {
   newItem: async (req, res, next) => {
     const newItem = new Item({
       _id: mongoose.Types.ObjectId(),
-      description: req.body.description,
-      quantity: req.body.quantity,
-      price: req.body.price
+      description: req.value.body.description,
+      quantity: req.value.body.quantity,
+      price: req.value.body.price
     });
     const item = await newItem.save();
     res.status(201).json(item);
@@ -23,7 +23,7 @@ module.exports = {
   },
   replaceItem: async (req, res, next) => {
     const itemId = req.value.params.id;
-    const newItem = req.body;
+    const newItem = req.value.body;
     const result = await Item.findOneAndReplace(itemId, newItem);
     res.status(201).json({
       message: "Item replaced successfully!"
@@ -31,7 +31,7 @@ module.exports = {
   },
   updateItem: async (req, res, next) => {
     const itemId = req.value.params.id;
-    const newItem = req.body;
+    const newItem = req.value.body;
     const result = await Item.findOneAndUpdate(itemId, newItem);
     res.status(201).json({
       message: "Item updated successfully!"

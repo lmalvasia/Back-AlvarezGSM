@@ -9,9 +9,10 @@ module.exports = {
   newProvider: async (req, res, next) => {
     const newProvider = new Provider({
       _id: mongoose.Types.ObjectId(),
-      name: req.body.name,
-      street: req.body.street,
-      cellphone: req.body.cellphone
+      company: req.value.body.company,
+      email: req.value.body.email,
+      street: req.value.body.street,
+      cellphone: req.value.body.cellphone
     });
     const provider = await newProvider.save();
     res.status(201).json(provider);
@@ -23,7 +24,7 @@ module.exports = {
   },
   replaceProvider: async (req, res, next) => {
     const providerId = req.value.params.id;
-    const newProvider = req.body;
+    const newProvider = req.value.body;
     const result = await Provider.findOneAndReplace(providerId, newProvider);
     res.status(201).json({
       message: "Provider replaced successfully!"
@@ -31,7 +32,7 @@ module.exports = {
   },
   updateProvider: async (req, res, next) => {
     const providerId = req.value.params.id;
-    const newProvider = req.body;
+    const newProvider = req.value.body;
     const result = await Provider.findOneAndUpdate(providerId, newProvider);
     res.status(201).json({
       message: "Provider updated successfully!"
