@@ -1,7 +1,6 @@
-const express = require("express");
-const mongoose = require("mongoose");
 const router = require("express-promise-router")();
 const PurchaseController = require("../../controllers/purchases.js");
+const { validateParam, schemas } = require("../../helpers/routeHelpers");
 
 router
   .route("/")
@@ -10,14 +9,29 @@ router
 
 router
   .route("/:id")
-  .get(PurchaseController.getPurchase)
-  .put(PurchaseController.replacePurchase)
-  .patch(PurchaseController.updatePurchase)
-  .delete(PurchaseController.deletePurchase);
+  .get(validateParam(schemas.idSchema, "id"), PurchaseController.getPurchase)
+  .put(
+    validateParam(schemas.idSchema, "id"),
+    PurchaseController.replacePurchase
+  )
+  .patch(
+    validateParam(schemas.idSchema, "id"),
+    PurchaseController.updatePurchase
+  )
+  .delete(
+    validateParam(schemas.idSchema, "id"),
+    PurchaseController.deletePurchase
+  );
 
 router
   .route("/:id/products")
-  .get(PurchaseController.getPurchase_Products)
-  .post(PurchaseController.newPurchase_Product);
+  .get(
+    validateParam(schemas.idSchema, "id"),
+    PurchaseController.getPurchase_Products
+  )
+  .post(
+    validateParam(schemas.idSchema, "id"),
+    PurchaseController.newPurchase_Product
+  );
 
 module.exports = router;

@@ -17,12 +17,12 @@ module.exports = {
     res.status(201).json(customer);
   },
   getCustomer: async (req, res, next) => {
-    const customerId = req.params.id;
+    const customerId = req.value.params.id;
     const customer = await Customer.findById(customerId);
     res.status(200).json(customer);
   },
   replaceCustomer: async (req, res, next) => {
-    const customerId = req.params.id;
+    const customerId = req.value.params.id;
     const newCustomer = req.body;
     const result = await Customer.findOneAndReplace(customerId, newCustomer);
     res.status(201).json({
@@ -30,7 +30,7 @@ module.exports = {
     });
   },
   updateCustomer: async (req, res, next) => {
-    const customerId = req.params.id;
+    const customerId = req.value.params.id;
     const newCustomer = req.body;
     const result = await Customer.findOneAndUpdate(customerId, newCustomer);
     res.status(201).json({
@@ -38,7 +38,7 @@ module.exports = {
     });
   },
   deleteCustomer: async (req, res, next) => {
-    const customerId = req.params.id;
+    const customerId = req.value.params.id;
     const result = await Customer.findByIdAndDelete(customerId);
     res.status(201).json({
       message: "Customer deleted successfully!"

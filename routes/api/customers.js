@@ -1,8 +1,6 @@
-const express = require("express");
-const mongoose = require("mongoose");
 const router = require("express-promise-router")();
 const CustomerController = require("../../controllers/customers");
-const { validateParam } = require("../../helpers/routeHelpers");
+const { validateParam, schemas } = require("../../helpers/routeHelpers");
 
 router
   .route("/")
@@ -11,9 +9,18 @@ router
 
 router
   .route("/:id")
-  .get(CustomerController.getCustomer)
-  .put(CustomerController.replaceCustomer)
-  .patch(CustomerController.updateCustomer)
-  .delete(CustomerController.deleteCustomer);
+  .get(validateParam(schemas.idSchema, "id"), CustomerController.getCustomer)
+  .put(
+    validateParam(schemas.idSchema, "id"),
+    CustomerController.replaceCustomer
+  )
+  .patch(
+    validateParam(schemas.idSchema, "id"),
+    CustomerController.updateCustomer
+  )
+  .delete(
+    validateParam(schemas.idSchema, "id"),
+    CustomerController.deleteCustomer
+  );
 
 module.exports = router;

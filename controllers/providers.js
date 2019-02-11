@@ -17,12 +17,12 @@ module.exports = {
     res.status(201).json(provider);
   },
   getProvider: async (req, res, next) => {
-    const providerId = req.params.id;
+    const providerId = req.value.params.id;
     const provider = await Provider.findById(providerId);
     res.status(200).json(provider);
   },
   replaceProvider: async (req, res, next) => {
-    const providerId = req.params.id;
+    const providerId = req.value.params.id;
     const newProvider = req.body;
     const result = await Provider.findOneAndReplace(providerId, newProvider);
     res.status(201).json({
@@ -30,7 +30,7 @@ module.exports = {
     });
   },
   updateProvider: async (req, res, next) => {
-    const providerId = req.params.id;
+    const providerId = req.value.params.id;
     const newProvider = req.body;
     const result = await Provider.findOneAndUpdate(providerId, newProvider);
     res.status(201).json({
@@ -38,7 +38,7 @@ module.exports = {
     });
   },
   deleteProvider: async (req, res, next) => {
-    const providerId = req.params.id;
+    const providerId = req.value.params.id;
     const result = await Provider.findByIdAndDelete(providerId);
     res.status(201).json({
       message: "Provider deleted successfully!"

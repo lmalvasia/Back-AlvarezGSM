@@ -24,14 +24,14 @@ module.exports = {
     res.status(201).json(purchase);
   },
   getPurchase: async (req, res, next) => {
-    const purchaseId = req.params.id;
+    const purchaseId = req.value.params.id;
     const purchase = await Purchase.findById(purchaseId)
       .select("_id purchase_number provider")
       .populate("provider", "name");
     res.status(200).json(purchase);
   },
   replacePurchase: async (req, res, next) => {
-    const purchaseId = req.params.id;
+    const purchaseId = req.value.params.id;
     const newPurchase = req.body;
     const result = await Purchase.findOneAndReplace(purchaseId, newPurchase);
     res.status(201).json({
@@ -39,7 +39,7 @@ module.exports = {
     });
   },
   updatePurchase: async (req, res, next) => {
-    const purchaseId = req.params.id;
+    const purchaseId = req.value.params.id;
     const newPurchase = req.body;
     const result = await Purchase.findOneAndUpdate(purchaseId, newPurchase);
     res.status(201).json({
@@ -47,7 +47,7 @@ module.exports = {
     });
   },
   deletePurchase: async (req, res, next) => {
-    const purchaseId = req.params.id;
+    const purchaseId = req.value.params.id;
     const purchase = await Purchase.findById(purchaseId);
     const provider = await Provider.findById(purchase.provider).populate(
       "purchases"
@@ -68,13 +68,13 @@ module.exports = {
     await Purchase.findByIdAndDelete(purchase._id);
   },
   getPurchase_Products: async (req, res, next) => {
-    const purchaseId = req.params.id;
+    const purchaseId = req.value.params.id;
     const purchase = await Purchase.findById(purchaseId);
     res.status(200).json(purchase.purchaseproducts);
   },
   newPurchase_Product: async (req, res, next) => {
     const item = await Item.findById(req.body.product);
-    const purchase = await Purchase.findById(req.params.id);
+    const purchase = await Purchase.findById(req.value.params.id);
     const purchase_product = new Purchase_Product({
       _id: mongoose.Types.ObjectId(),
       product: item,
