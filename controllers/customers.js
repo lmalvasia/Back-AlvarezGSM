@@ -37,5 +37,11 @@ module.exports = {
       message: "Customer updated successfully!"
     });
   },
-  deleteCustomer: async (req, res, next) => {}
+  deleteCustomer: async (req, res, next) => {
+    const customerId = req.params.id;
+    const result = await Customer.findByIdAndDelete(customerId);
+    res.status(201).json({
+      message: "Customer deleted successfully!"
+    });
+  }
 };

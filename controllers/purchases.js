@@ -6,7 +6,9 @@ const mongoose = require("mongoose");
 
 module.exports = {
   index: async (req, res, next) => {
-    const purchases = await Purchase.find({});
+    const purchases = await Purchase.find({})
+      .select("_idpurchase_number provider")
+      .populate("provider", "name");
     res.status(200).json(purchases);
   },
   newPurchase: async (req, res, next) => {
@@ -17,11 +19,15 @@ module.exports = {
       provider: provider
     });
     const purchase = await newPurchase.save();
+    provider.purchases.push(provider);
+    await provider.save();
     res.status(201).json(purchase);
   },
   getPurchase: async (req, res, next) => {
     const purchaseId = req.params.id;
-    const purchase = await Purchase.findById(purchaseId);
+    const purchase = await Purchase.findById(purchaseId)
+      .select("_id purchase_number provider")
+      .populate("provider", "name");
     res.status(200).json(purchase);
   },
   replacePurchase: async (req, res, next) => {
@@ -40,7 +46,27 @@ module.exports = {
       message: "Purchase updated successfully!"
     });
   },
-  deletePurchase: async (req, res, next) => {},
+  deletePurchase: async (req, res, next) => {
+    const purchaseId = req.params.id;
+    const purchase = await Purchase.findById(purchaseId);
+    const provider = await Provider.findById(purchase.provider).populate(
+      "purchases"
+    );
+    const purchase_products = await Purchase_Product.find({
+      purchase: purchase
+    });
+    for (i = 0; i < purchase_products.length; i++) {
+      const item = await Item.findById(purchase_products[i].product._id);
+      if (item) {
+        item.purchaseproducts.pull(purchase_products[i]);
+        await item.save();
+        await Purchase_Product.deleteOne(purchase_products[i]);
+      }
+    }
+    provider.purchases.pull(purchase);
+    await Provider.findByIdAndUpdate(provider._id, provider);
+    await Purchase.findByIdAndDelete(purchase._id);
+  },
   getPurchase_Products: async (req, res, next) => {
     const purchaseId = req.params.id;
     const purchase = await Purchase.findById(purchaseId);
@@ -64,7 +90,7 @@ module.exports = {
       await purchase.save();
     }, 2000);
     setTimeout(async () => {
-      item.purchaseproducts.push(purchase);
+      item.purchaseproducts.push(purchase_product);
       await item.save();
     }, 2000);
     res.status(201).json(purchase_product);

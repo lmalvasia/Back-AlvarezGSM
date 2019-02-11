@@ -37,5 +37,11 @@ module.exports = {
       message: "Provider updated successfully!"
     });
   },
-  deleteProvider: async (req, res, next) => {}
+  deleteProvider: async (req, res, next) => {
+    const providerId = req.params.id;
+    const result = await Provider.findByIdAndDelete(providerId);
+    res.status(201).json({
+      message: "Provider deleted successfully!"
+    });
+  }
 };

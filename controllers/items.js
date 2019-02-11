@@ -37,5 +37,11 @@ module.exports = {
       message: "Item updated successfully!"
     });
   },
-  deleteItem: async (req, res, next) => {}
+  deleteItem: async (req, res, next) => {
+    const itemId = req.params.id;
+    const result = await Item.findByIdAndDelete(itemId);
+    res.status(201).json({
+      message: "Item deleted successfully!"
+    });
+  }
 };
