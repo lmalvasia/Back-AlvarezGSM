@@ -7,7 +7,7 @@ var repairs = require("./repairs");
 var purchases = require("./purchases");
 var sales = require("./sales");
 var items = require("./items");
-var router = express.Router();
+var router = require("express-promise-router")();
 
 router.use(cors());
 
