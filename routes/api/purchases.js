@@ -5,16 +5,26 @@ const {
   validateBody,
   schemas
 } = require("../../helpers/routeHelpers");
+const checkAuth = require("../../controllers/check-auth");
 
 router
   .route("/")
-  .get(PurchaseController.index)
-  .post(validateBody(schemas.purchaseSchema), PurchaseController.newPurchase);
+  .get(checkAuth, PurchaseController.index)
+  .post(
+    checkAuth,
+    validateBody(schemas.purchaseSchema),
+    PurchaseController.newPurchase
+  );
 
 router
   .route("/:id")
-  .get(validateParam(schemas.idSchema, "id"), PurchaseController.getPurchase)
+  .get(
+    checkAuth,
+    validateParam(schemas.idSchema, "id"),
+    PurchaseController.getPurchase
+  )
   .put(
+    checkAuth,
     [
       validateParam(schemas.idSchema, "id"),
       validateBody(schemas.purchaseSchema)
@@ -22,6 +32,7 @@ router
     PurchaseController.replacePurchase
   )
   .patch(
+    checkAuth,
     [
       validateParam(schemas.idSchema, "id"),
       validateBody(schemas.purchaseOptionalSchema)
@@ -29,6 +40,7 @@ router
     PurchaseController.updatePurchase
   )
   .delete(
+    checkAuth,
     validateParam(schemas.idSchema, "id"),
     PurchaseController.deletePurchase
   );
@@ -36,10 +48,12 @@ router
 router
   .route("/:id/products")
   .get(
+    checkAuth,
     validateParam(schemas.idSchema, "id"),
     PurchaseController.getPurchase_Products
   )
   .post(
+    checkAuth,
     [
       validateParam(schemas.idSchema, "id"),
       validateBody(schemas.purchase_productSchema)

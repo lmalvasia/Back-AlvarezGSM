@@ -5,16 +5,26 @@ const {
   validateBody,
   schemas
 } = require("../../helpers/routeHelpers");
+const checkAuth = require("../../controllers/check-auth");
 
 router
   .route("/")
-  .get(ProviderController.index)
-  .post(validateBody(schemas.providerSchema), ProviderController.newProvider);
+  .get(checkAuth, ProviderController.index)
+  .post(
+    checkAuth,
+    validateBody(schemas.providerSchema),
+    ProviderController.newProvider
+  );
 
 router
   .route("/:id")
-  .get(validateParam(schemas.idSchema, "id"), ProviderController.getProvider)
+  .get(
+    checkAuth,
+    validateParam(schemas.idSchema, "id"),
+    ProviderController.getProvider
+  )
   .put(
+    checkAuth,
     [
       validateParam(schemas.idSchema, "id"),
       validateBody(schemas.providerSchema)
@@ -22,6 +32,7 @@ router
     ProviderController.replaceProvider
   )
   .patch(
+    checkAuth,
     [
       validateParam(schemas.idSchema, "id"),
       validateBody(schemas.providerOptionalSchema)
@@ -29,6 +40,7 @@ router
     ProviderController.updateProvider
   )
   .delete(
+    checkAuth,
     validateParam(schemas.idSchema, "id"),
     ProviderController.deleteProvider
   );

@@ -6,15 +6,26 @@ const {
   schemas
 } = require("../../helpers/routeHelpers");
 
+const checkAuth = require("../../controllers/check-auth");
+
 router
   .route("/")
-  .get(CustomerController.index)
-  .post(validateBody(schemas.customerSchema), CustomerController.newCustomer);
+  .get(checkAuth, CustomerController.index)
+  .post(
+    checkAuth,
+    validateBody(schemas.customerSchema),
+    CustomerController.newCustomer
+  );
 
 router
   .route("/:id")
-  .get(validateParam(schemas.idSchema, "id"), CustomerController.getCustomer)
+  .get(
+    checkAuth,
+    validateParam(schemas.idSchema, "id"),
+    CustomerController.getCustomer
+  )
   .put(
+    checkAuth,
     [
       validateParam(schemas.idSchema, "id"),
       validateBody(schemas.customerSchema)
@@ -22,6 +33,7 @@ router
     CustomerController.replaceCustomer
   )
   .patch(
+    checkAuth,
     [
       validateParam(schemas.idSchema, "id"),
       validateBody(schemas.customerOptionalSchema)
@@ -29,6 +41,7 @@ router
     CustomerController.updateCustomer
   )
   .delete(
+    checkAuth,
     validateParam(schemas.idSchema, "id"),
     CustomerController.deleteCustomer
   );
