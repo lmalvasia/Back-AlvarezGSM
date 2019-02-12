@@ -13,7 +13,7 @@ router.use(cors());
 
 router.use("/customers", customers);
 router.use("/providers", providers);
-router.use("/users", users);
+router.use("/admin/users", users);
 router.use("/repairs", repairs);
 router.use("/purchases", purchases);
 router.use("/sales", sales);

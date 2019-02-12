@@ -5,26 +5,33 @@ const {
   validateBody,
   schemas
 } = require("../../helpers/routeHelpers");
+const checkAuth = require("../../controllers/check-auth");
 
 router
   .route("/")
-  .get(ItemController.index)
-  .post(validateBody(schemas.itemSchema), ItemController.newItem);
+  .get(checkAuth, ItemController.index)
+  .post(checkAuth, validateBody(schemas.itemSchema), ItemController.newItem);
 
 router
   .route("/:id")
-  .get(validateParam(schemas.idSchema, "id"), ItemController.getItem)
+  .get(checkAuth, validateParam(schemas.idSchema, "id"), ItemController.getItem)
   .put(
+    checkAuth,
     [validateParam(schemas.idSchema, "id"), validateBody(schemas.itemSchema)],
     ItemController.replaceItem
   )
   .patch(
+    checkAuth,
     [
       validateParam(schemas.idSchema, "id"),
       validateBody(schemas.itemOptionalSchema)
     ],
     ItemController.updateItem
   )
-  .delete(validateParam(schemas.idSchema, "id"), ItemController.deleteItem);
+  .delete(
+    checkAuth,
+    validateParam(schemas.idSchema, "id"),
+    ItemController.deleteItem
+  );
 
 module.exports = router;

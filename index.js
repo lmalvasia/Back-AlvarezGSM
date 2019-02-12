@@ -16,7 +16,6 @@ mongoose.connect(
     "@alvarezgsm-shard-00-00-z43tn.mongodb.net:27017,alvarezgsm-shard-00-01-z43tn.mongodb.net:27017,alvarezgsm-shard-00-02-z43tn.mongodb.net:27017/test?ssl=true&replicaSet=AlvarezGSM-shard-0&authSource=admin&retryWrites=true",
   { useNewUrlParser: true, useCreateIndex: true }
 );
-
 mongoose.Promise = global.Promise;
 
 app.use("/api", api);
