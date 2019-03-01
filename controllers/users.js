@@ -41,7 +41,6 @@ module.exports = {
     } else {
       const match = await bcrypt.compare(req.body.password, user.password);
       if (match) {
-        console.log(process.env.JWT_KEY);
         const token = await jwt.sign(
           {
             email: user.email,
@@ -54,7 +53,8 @@ module.exports = {
         );
         res.status(200).json({
           message: "Auth successful",
-          token: token
+          token: token,
+          user: user.email
         });
       } else {
         res.status(401).json({
