@@ -25,7 +25,7 @@ module.exports = {
   replaceProvider: async (req, res, next) => {
     const providerId = req.value.params.id;
     const newProvider = req.value.body;
-    const result = await Provider.findOneAndReplace(providerId, newProvider);
+    const result = await Provider.findByIdAndUpdate(providerId, newProvider);
     res.status(201).json({
       message: "Provider replaced successfully!"
     });
@@ -33,7 +33,7 @@ module.exports = {
   updateProvider: async (req, res, next) => {
     const providerId = req.value.params.id;
     const newProvider = req.value.body;
-    const result = await Provider.findOneAndUpdate(providerId, newProvider);
+    const result = await Provider.findByIdAndUpdate(providerId, newProvider);
     res.status(201).json({
       message: "Provider updated successfully!"
     });
